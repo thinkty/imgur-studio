@@ -1,0 +1,58 @@
+{
+  "name": "react-template",
+  "version": "0.0.1",
+  "author": "Tae Yoon Kim",
+  "license": "MIT",
+  "description": "My version of CRA",
+  "homepage": "https://github.com/thinkty/react-template",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thinkty/react-template.git"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/",
+    "lint:fix": "./node_modules/.bin/eslint --fix src/",
+    "watch": "webpack --watch --config webpack.dev.js",
+    "serve": "webpack serve --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "build:dev": "webpack --config webpack.dev.js"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/preset-env": "^7.12.10",
+    "@babel/preset-react": "^7.12.10",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^5.0.1",
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "html-webpack-plugin": "^4.5.0",
+    "prop-types": "^15.7.2",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.10.1",
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.7.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "transform-react-remove-prop-types",
+      "@babel/plugin-proposal-class-properties"
+    ]
+  }
+}
