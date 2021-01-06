@@ -64,6 +64,9 @@ export default function Uploader() {
         <table 
           style={{
             width: '100%',
+            display: 'block',
+            maxHeight: '50vh',
+            overflow: 'auto',
             border: 'thin solid lightgrey',
             borderCollapse: 'collapse',
           }}
@@ -72,6 +75,10 @@ export default function Uploader() {
             <tr>
               <th
                 style={{
+                  position: 'sticky',
+                  top: 0,
+                  background: 'white',
+                  boxShadow: '0 2px 2px -1px lightgrey',
                   padding: '5px',
                   textAlign: 'left',
                   borderBottom: 'thin solid lightgrey',
