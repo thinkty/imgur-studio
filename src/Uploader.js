@@ -1,116 +1,107 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { uploadStatus } from './App';
 
-export default function Uploader() {
-  const [ content, setContent ] = useState(null);
-  const [ progress, setProgress ] = useState(false);
 
-  const previewFile = (e) => {
-    const file = e.target.files[0];
-
-    // Read from the file
-    const reader = new FileReader();
-
-    reader.onloadstart = () => {
-      setProgress(true);
-    }
-    reader.onloadend = () => {
-      setProgress(false);
-    }
-    reader.onload = () => {
-      setContent(reader.result.split('\n').filter((item) => {
-        return typeof item === 'string' && item !== '';
-      }));
-    }
-    reader.onerror = () => {
-      alert('Error while reading file. Check the logs!');
-      console.log(reader.error);
-    }
-    reader.readAsText(file);
+export default class Uploader extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      albumId: null,
+    };
   }
 
-  const uploadFile = (e) => {
+  /**
+   * Upload the urls to Imgur.
+   * 
+   * 1. Create an anonymous album and get the deleteHash and id in return
+   * 2. Upload the urls using the deleteHash
+   */
+  uploadFile = (e) => {
     e.preventDefault();
+
+    const { setStatus, urls } = this.props;
+    setStatus(uploadStatus.uploading);
+    const clientId = '860c31d168c3708';
+
+    // Album creation
+    const albumHeaders = new Headers();
+    albumHeaders.append('Authorization', `Client-ID ${clientId}`);
+    const albumFormData = new FormData();
+    albumFormData.append('privacy', 'hidden');
+
+    fetch('https://api.imgur.com/3/album', {
+      method: 'POST',
+      headers: albumHeaders,
+      body: albumFormData,
+    })
+    .then((albResRaw) => albResRaw.json())
+    .then(async (albRes) => {
+      if (albRes.status !== 200) {
+        throw Error(JSON.stringify(albRes));
+      }
+
+      // DeleteHash and Id retrieved
+      const { deletehash, id } = albRes.data;
+      console.log(`Album id: ${id}`);
+
+      for (const url of urls) {
+        const imageHeaders = new Headers();
+        imageHeaders.append('Authorization', `Client-ID ${clientId}`);
+        const imageFormData = new FormData();
+        imageFormData.append('type', 'URL');
+        imageFormData.append('image', url);
+        imageFormData.append('album', deletehash);
+
+        await fetch('https://api.imgur.com/3/image', {
+          method: 'POST',
+          headers: imageHeaders,
+          body: imageFormData,
+          redirect: 'follow',
+        })
+        .then((imgResRaw) => imgResRaw.json())
+        .then((imgRes) => {
+          if (imgRes.status !== 200) {
+            throw Error(JSON.stringify(imgRes));
+          }
+        });
+      }
+
+      setStatus(uploadStatus.ready);
+      this.setState({ albumId: id });
+    })
+    .catch((err) => {
+      alert('Oops! Something went wrong!');
+      console.error(err);
+    });
   }
 
-  return (
-    <div>
-      <input
-        type="file"
-        multiple={false}
-        accept=".txt"
-        onChange={previewFile}
-      />
-      {
-        progress &&
-        <div style={{ marginTop: '20px', }}>
-          loading...
-        </div>
-      }
-      {
-        content &&
-        <table 
-          style={{
-            width: '100%',
-            display: 'block',
-            maxHeight: '50vh',
-            overflow: 'auto',
-            border: 'thin solid lightgrey',
-            borderCollapse: 'collapse',
-            marginTop: '20px',
-          }}
+  render() {
+    const { albumId } = this.state;
+    const { status } = this.props;
+
+    return (
+      <div style={{ width: '100%', marginTop: '20px' }}>
+        <button
+          type="button"
+          disabled = {
+            status === uploadStatus.waiting ||
+            status === uploadStatus.uploading
+          }
+          onClick={this.uploadFile}
+          style={{ width: '100%' }}
         >
-          <tbody>
-            <tr>
-              <th
-                style={{
-                  position: 'sticky',
-                  top: 0,
-                  background: 'white',
-                  boxShadow: '0 2px 2px -1px lightgrey',
-                  padding: '5px',
-                  textAlign: 'left',
-                  borderBottom: 'thin solid lightgrey',
-                  fontFamily: 'Arial, sans-serif',
-                  fontWeight: 'normal',
-                }}
-              >
-                Links
-              </th>
-            </tr>
-            {
-              content.map((link) => (
-                <tr key={link}>
-                  <td
-                    style={{
-                      padding: '5px',
-                      textAlign: 'left',
-                      borderBottom: 'thin solid lightgrey',
-                      fontFamily: 'Arial, sans-serif',
-                    }}
-                  >
-                    <a href={link}>
-                      {
-                        link
-                      }
-                    </a>
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      }
-      <button
-        type="button"
-        disabled={!content}
-        onClick={uploadFile}
-        style={{
-          width: '100%',
-          marginTop: '20px',
-        }}
-      >
-        Submit
-      </button>
-    </div>
-  );
+          Upload
+        </button>
+        {
+          albumId &&
+          <div style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'normal' }}>
+            Upload successful:&nbsp;
+            <a href={`https://imgur.com/a/${albumId}`}>
+              {`https://imgur.com/a/${albumId}`}
+            </a>
+          </div>
+        }
+      </div>
+    );
+  }
 }
