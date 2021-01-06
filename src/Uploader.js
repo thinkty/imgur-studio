@@ -34,28 +34,15 @@ export default function Uploader() {
 
   return (
     <div>
-      <form
-        onSubmit={uploadFile}
-        style={{
-          paddingBottom: '20px',
-        }}
-      >
-        <input
-          type="file"
-          multiple={false}
-          accept=".txt"
-          onChange={previewFile}
-        />
-        <button
-          type="submit"
-          disabled={!content}
-        >
-          Submit
-        </button>
-      </form>
+      <input
+        type="file"
+        multiple={false}
+        accept=".txt"
+        onChange={previewFile}
+      />
       {
         progress &&
-        <div>
+        <div style={{ marginTop: '20px', }}>
           loading...
         </div>
       }
@@ -69,6 +56,7 @@ export default function Uploader() {
             overflow: 'auto',
             border: 'thin solid lightgrey',
             borderCollapse: 'collapse',
+            marginTop: '20px',
           }}
         >
           <tbody>
@@ -112,6 +100,17 @@ export default function Uploader() {
           </tbody>
         </table>
       }
+      <button
+        type="button"
+        disabled={!content}
+        onClick={uploadFile}
+        style={{
+          width: '100%',
+          marginTop: '20px',
+        }}
+      >
+        Submit
+      </button>
     </div>
   );
 }
