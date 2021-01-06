@@ -1,36 +1,35 @@
-import React, { Component } from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import ErrorPage from './ErrorPage';
-import MainPage from './MainPage';
-import UploadPage from './UploadPage';
-import ViewPage from './ViewPage';
+import React from 'react';
+import Uploader from './Uploader';
 
-export default class App extends Component {
-  render() {
-    return (
-      <BrowserRouter>
-        <Switch>
-          <Route
-            path="/"
-            component={MainPage}
-          />
-          <Route
-            path="/upload"
-            component={UploadPage}
-          />
-          <Route
-            path="/view"
-            component={ViewPage}
-          />
-          <Route
-            path="/404"
-            component={ErrorPage}
-          />
-          <Redirect
-            to="/404"
-          />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
+export default function App() {
+  return (
+    <div
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'grid',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div
+        style={{
+          border: 'thin solid lightgrey',
+          borderRadius: '10px',
+          padding: '20px',
+          margin: '20px',
+        }}
+      >
+        <div
+          style={{
+            paddingBottom: '20px',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          Upload images to Imgur by reading texts from a given file
+        </div>
+        <Uploader />
+      </div>
+    </div>
+  );
 }
