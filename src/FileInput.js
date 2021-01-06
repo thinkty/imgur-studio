@@ -13,7 +13,6 @@ export default function FileInput({ urls, setUrls }) {
       });
       parsedUrls = parsedUrls.map((item) => item.replaceAll(/\r?\n|\r/g, ''));
 
-      console.log(parsedUrls);
       setUrls(parsedUrls);
     }
     reader.onerror = () => {
