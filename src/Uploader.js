@@ -72,6 +72,7 @@ export default class Uploader extends Component {
     .catch((err) => {
       alert('Oops! Something went wrong!');
       console.error(err);
+      setStatus(uploadStatus.ready);
     });
   }
 
@@ -90,11 +91,23 @@ export default class Uploader extends Component {
           onClick={this.uploadFile}
           style={{ width: '100%' }}
         >
-          Upload
+          {
+            status === uploadStatus.uploading
+            ?
+            'Uploading...'
+            :
+            'Upload'
+          }
         </button>
         {
           albumId &&
-          <div style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'normal' }}>
+          <div
+            style={{
+              fontFamily: 'Arial, sans-serif',
+              fontWeight: 'normal',
+              marginTop: '20px',
+            }}
+          >
             Upload successful:&nbsp;
             <a href={`https://imgur.com/a/${albumId}`}>
               {`https://imgur.com/a/${albumId}`}
