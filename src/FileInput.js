@@ -8,10 +8,12 @@ export default function FileInput({ urls, setUrls }) {
     const reader = new FileReader();
 
     reader.onload = () => {
-      const parsedUrls = reader.result.split('\n').filter((item) => {
+      let parsedUrls = reader.result.split('\n').filter((item) => {
         return typeof item === 'string' && item !== '';
       });
+      parsedUrls = parsedUrls.map((item) => item.replaceAll(/\r?\n|\r/g, ''));
 
+      console.log(parsedUrls);
       setUrls(parsedUrls);
     }
     reader.onerror = () => {
